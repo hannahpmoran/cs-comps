@@ -1,0 +1,35 @@
+﻿List of ideas:
+
+
+* Denial of service attack 
+* SQL injection 
+* Socially engineered email (phishing) 
+* Cross-site scripting
+* Password cracking 
+* Network sniffing? Maybe we have our server talk to another server using basic authentication
+* MAC Spoofing. Maybe we could combine it with a server that’s set up to block specific IP addresses from ssh’ing in https://www.securew2.com/blog/how-do-mac-spoofing-attacks-work 
+* Lateral movement
+* URL Interpretation – testing API paths
+* Upload file (change the signature of the file) - https://learnhacking.io/overthewire-natas-level-13-walkthrough/ 
+* API vulnerability - https://portswigger.net/web-security/learning-paths/api-testing 
+* Web cache poisoning
+* /etc/passwd and /etc/shadow attacks - https://delinea.com/blog/linux-privilege-escalation
+
+
+
+
+Scenario: 
+
+
+A small Midwest liberal arts college’s office website includes an image carousel. The creators of the website created a simple (and not so secure) API interface so the managers of the site could regularly update the pictures of the carousel. 
+
+
+Step-by-step:
+
+
+1. Attacker locates site with nmap.
+2. Attacker notices that the site uses an API request to get the image files. This API request uses HTTP basic authentication.
+3. Attacker gets basic authentication password in plaintext (it’ll probably be in base64).
+4. Attacker finds the upload endpoint of the API and uploads a file to the site (using the basic authentication password from step 3). Given that the site checks the file type (making sure it’s a valid image type), the attacker changes the file signature to make it look like the attacker is uploading an image while they are really uploading a php web shell.
+5. From the web shell the attacker is running on the site, they find /etc/passwd. This file could either be writeable or the attacker could have to get write permission (depending on whether or not we want to add an extra step). 
+6. Attacker modifies /etc/passwd, inserting a new password for root. Attacker now has root permissions on the site.
